@@ -31,24 +31,25 @@ class eclipse::install::download (
     default => 'linux-gtk',
   }
 
-  $filename = "eclipse-${package}-${release_name}-${service_release}-${platform_tag}${archsuffix}"
-  $url = "${mirror}/technology/epp/downloads/release/${release_name}/${service_release}/${filename}.tar.gz"
+  $filename = "eclipse-${package}-${release_name}-${service_release}-${platform_tag}${archsuffix}.tar.gz"
+  $url = "${mirror}/technology/epp/downloads/release/${release_name}/${service_release}/${filename}"
+  $archive_path = "/var/tmp/source/${filename}"
 
   if $owner_group and $ensure == 'present' {
     exec { 'eclipse ownership':
       command     => "chgrp -R '${owner_group}' '${eclipse::params::target_dir}/eclipse'",
       refreshonly => true,
-      subscribe   => Archive[$filename]
+      subscribe   => Archive[$archive_path]
     }
     exec { 'eclipse group permissions':
       command     => "find '${eclipse::params::target_dir}/eclipse' -type d -exec chmod g+s {} \\;",
       refreshonly => true,
-      subscribe   => Archive[$filename]
+      subscribe   => Archive[$archive_path]
     }
     exec { 'eclipse write permissions':
       command     => "chmod -R g+w '${eclipse::params::target_dir}/eclipse'",
       refreshonly => true,
-      subscribe   => Archive[$filename]
+      subscribe   => Archive[$archive_path]
     }
   }
 
@@ -56,14 +57,13 @@ class eclipse::install::download (
     ensure  => $create_menu_entry ? { false => absent, default => $ensure },
     content => template('eclipse/opt-eclipse.desktop.erb'),
     mode    => 644,
-    require => Archive[ "/var/tmp/source/${filename}.tar.gz" ],
+    require => Archive[$archive_path]
   }
 
   # per https://forge.puppet.com/puppet/archive
-  archive { "/var/tmp/source/${filename}.tar.gz":
+  archive { $archive_path:
     ensure       => $ensure,
     source       => $url,
-    path         => "/var/tmp/source/${filename}.tar.gz",
     extract      => true,
     extract_path => $eclipse::params::target_dir,
     creates      => "${eclipse::params::target_dir}/eclipse",
