@@ -7,12 +7,13 @@
 #  include eclipse::install::download
 #
 class eclipse::install::download (
-  $package         = 'standard',
-  $release_name    = 'kepler',
-  $service_release = 'SR1',
-  $mirror          = 'https://archive.eclipse.org',
-  $owner_group     = undef,
-  $ensure          = present
+  $package           = 'standard',
+  $release_name      = 'kepler',
+  $service_release   = 'SR1',
+  $mirror            = 'https://archive.eclipse.org',
+  $owner_group       = undef,
+  $ensure            = present,
+  $create_menu_entry = true,
 ) {
 
   include eclipse::params
@@ -45,9 +46,9 @@ class eclipse::install::download (
   }
 
   file { '/usr/share/applications/opt-eclipse.desktop':
-    ensure  => $ensure,
+    ensure  => $create_menu_entry ? { false => absent, default => $ensure },
     content => template('eclipse/opt-eclipse.desktop.erb'),
-    mode    => "644",
+    mode    => 644,
     require => Archive[ "/var/tmp/source/${filename}.tar.gz" ],
   }
 
