@@ -14,6 +14,7 @@ class eclipse (
   $owner_group       = undef,
   $ensure            = present,
   $create_menu_entry = true,
+  $target_dir        = undef,
 ) {
 
   include eclipse::params
@@ -29,6 +30,7 @@ class eclipse (
         owner_group       => $owner_group,
         ensure            => $ensure,
         create_menu_entry => $create_menu_entry,
+        target_dir        => $target_dir,
       }
       $bin = $eclipse::params::download_bin
     }

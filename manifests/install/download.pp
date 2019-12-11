@@ -13,6 +13,7 @@ class eclipse::install::download (
   $mirror            = 'https://archive.eclipse.org',
   $owner_group       = undef,
   $ensure            = present,
+  $target_dir        = undef,
   $create_menu_entry = true,
 ) {
 
@@ -60,13 +61,18 @@ class eclipse::install::download (
     require => Archive[$archive_path]
   }
 
+  $target_dir_ = $target_dir ? {
+    undef   => $eclipse::params::target_dir,
+    default => $target_dir
+  }
+
   # per https://forge.puppet.com/puppet/archive
   archive { $archive_path:
     ensure       => $ensure,
     source       => $url,
     extract      => true,
-    extract_path => $eclipse::params::target_dir,
-    creates      => "${eclipse::params::target_dir}/eclipse",
+    extract_path => $target_dir_,
+    creates      => "${target_dir_}/eclipse",
   }
 
 }
