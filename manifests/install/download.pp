@@ -17,6 +17,7 @@ class eclipse::install::download (
 ) {
 
   include eclipse::params
+  include ::archive
 
   $archsuffix = $::architecture ? {
     /i.86/           => '',
@@ -24,7 +25,13 @@ class eclipse::install::download (
     default          => "-${::architecture}"
   }
 
-  $filename = "eclipse-${package}-${release_name}-${service_release}-linux-gtk${archsuffix}"
+  $platform_tag = $::operatingsystem ? {
+    windows => 'win32',
+    Darwin  => 'macosx-cocoa',
+    default => 'linux-gtk',
+  }
+
+  $filename = "eclipse-${package}-${release_name}-${service_release}-${platform_tag}${archsuffix}"
   $url = "${mirror}/technology/epp/downloads/release/${release_name}/${service_release}/${filename}.tar.gz"
 
   if $owner_group and $ensure == 'present' {
@@ -53,7 +60,6 @@ class eclipse::install::download (
   }
 
   # per https://forge.puppet.com/puppet/archive
-  include '::archive'
   archive { "/var/tmp/source/${filename}.tar.gz":
     ensure       => $ensure,
     source       => $url,
