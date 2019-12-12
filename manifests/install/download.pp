@@ -14,6 +14,7 @@ class eclipse::install::download (
   $owner_group       = undef,
   $ensure            = present,
   $target_dir        = undef,
+  $extract_command   = undef,
   $create_menu_entry = true,
 ) {
 
@@ -68,11 +69,12 @@ class eclipse::install::download (
 
   # per https://forge.puppet.com/puppet/archive
   archive { $archive_path:
-    ensure       => $ensure,
-    source       => $url,
-    extract      => true,
-    extract_path => $target_dir_,
-    creates      => "${target_dir_}/eclipse",
+    ensure          => $ensure,
+    source          => $url,
+    extract         => true,
+    extract_path    => $target_dir_,
+    creates         => "${target_dir_}/eclipse",
+    extract_command => $extract_command,
   }
 
 }

@@ -7,14 +7,15 @@
 #  include eclipse
 #
 class eclipse (
-  $package           = 'standard',
-  $release_name      = 'kepler',
-  $service_release   = 'SR2',
-  $method            = 'package',
-  $owner_group       = undef,
-  $ensure            = present,
-  $create_menu_entry = true,
-  $target_dir        = undef,
+  $package                  = 'standard',
+  $release_name             = 'kepler',
+  $service_release          = 'SR2',
+  $method                   = 'package',
+  $owner_group              = undef,
+  $ensure                   = present,
+  $create_menu_entry        = true,
+  $target_dir               = undef,
+  $download_extract_command = undef,
 ) {
 
   include eclipse::params
@@ -31,6 +32,7 @@ class eclipse (
         ensure            => $ensure,
         create_menu_entry => $create_menu_entry,
         target_dir        => $target_dir,
+        extract_command   => $download_extract_command,
       }
       $bin = $eclipse::params::download_bin
     }
