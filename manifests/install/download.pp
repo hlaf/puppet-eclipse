@@ -37,21 +37,26 @@ class eclipse::install::download (
   $url = "${mirror}/technology/epp/downloads/release/${release_name}/${service_release}/${filename}"
   $archive_path = "/var/tmp/source/${filename}"
 
+  $target_dir_ = $target_dir ? {
+    undef   => $eclipse::params::target_dir,
+    default => $target_dir
+  }
+
   if $owner_group and $ensure == 'present' {
     exec { 'eclipse ownership':
-      command     => "chgrp -R '${owner_group}' '${eclipse::params::target_dir}/eclipse'",
+      command     => "chgrp -R '${owner_group}' '${target_dir_}'",
       path        => $::path,
       refreshonly => true,
       subscribe   => Archive[$archive_path]
     }
     exec { 'eclipse group permissions':
-      command     => "find '${eclipse::params::target_dir}/eclipse' -type d -exec chmod g+s {} \\;",
+      command     => "find '${target_dir_}' -type d -exec chmod g+s {} \\;",
       path        => $::path,
       refreshonly => true,
       subscribe   => Archive[$archive_path]
     }
     exec { 'eclipse write permissions':
-      command     => "chmod -R g+w '${eclipse::params::target_dir}/eclipse'",
+      command     => "chmod -R g+w '${target_dir_}'",
       path        => $::path,
       refreshonly => true,
       subscribe   => Archive[$archive_path]
@@ -63,11 +68,6 @@ class eclipse::install::download (
     content => template('eclipse/opt-eclipse.desktop.erb'),
     mode    => 644,
     require => Archive[$archive_path]
-  }
-
-  $target_dir_ = $target_dir ? {
-    undef   => $eclipse::params::target_dir,
-    default => $target_dir
   }
 
   exec { "create_install_path_${target_dir_}" :
