@@ -70,6 +70,12 @@ class eclipse::install::download (
     default => $target_dir
   }
 
+  exec { "create_install_path_${target_dir_}" :
+    command => "mkdir -p ${target_dir_}",
+    path    => $::path,
+    creates => $target_dir_,
+  }
+  ->
   # per https://forge.puppet.com/puppet/archive
   archive { $archive_path:
     ensure          => $ensure,
