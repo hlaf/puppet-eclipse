@@ -6,7 +6,7 @@
 #
 #  include eclipse::install::download
 #
-class eclipse::install::download (
+define eclipse::install::download (
   $package           = 'standard',
   $release_name      = 'kepler',
   $service_release   = 'SR1',

@@ -24,7 +24,7 @@ class eclipse (
 
   case $method {
     download: {
-      class { 'eclipse::install::download':
+      eclipse::install::download { "${package}@${release_name}@${service_release}":
         package           => $package,
         release_name      => $release_name,
         service_release   => $service_release,
