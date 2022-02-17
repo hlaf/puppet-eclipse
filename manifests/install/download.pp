@@ -22,9 +22,9 @@ class eclipse::install::download (
   include ::archive
 
   $archsuffix = $::architecture ? {
-    /i.86/           => '',
-    /(amd64|x86_64)/ => '-x86_64',
-    default          => "-${::architecture}"
+    /i.86/               => '',
+    /(amd64|x86_64|x64)/ => '-x86_64',
+    default              => "-${::architecture}"
   }
 
   $platform_tag = $::operatingsystem ? {
@@ -33,10 +33,10 @@ class eclipse::install::download (
     default => 'linux-gtk',
   }
 
-  $filename = "eclipse-${package}-${release_name}-${service_release}-${platform_tag}${archsuffix}.tar.gz"
+  $file_ext = $::operatingsystem ? { 'windows' => 'zip', default => 'tar.gz' }
+  $filename = "eclipse-${package}-${release_name}-${service_release}-${platform_tag}${archsuffix}.${file_ext}"
   $url = "${mirror}/technology/epp/downloads/release/${release_name}/${service_release}/${filename}"
-  $archive_path = "/var/tmp/source/${filename}"
-
+  $archive_path = path_join(get_system_temp_dir(), $filename)
   $target_dir_ = $target_dir ? {
     undef   => $eclipse::params::target_dir,
     default => $target_dir
