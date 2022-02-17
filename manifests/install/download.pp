@@ -63,11 +63,13 @@ class eclipse::install::download (
     }
   }
 
-  file { '/usr/share/applications/opt-eclipse.desktop':
-    ensure  => $create_menu_entry ? { false => absent, default => $ensure },
-    content => template('eclipse/opt-eclipse.desktop.erb'),
-    mode    => 644,
-    require => Archive[$archive_path]
+  if $::operatingsystem != 'windows' {
+    file { '/usr/share/applications/opt-eclipse.desktop':
+      ensure  => $create_menu_entry ? { false => absent, default => $ensure },
+      content => template('eclipse/opt-eclipse.desktop.erb'),
+      mode    => 644,
+      require => Archive[$archive_path]
+    }
   }
 
   exec { "create_install_path_${target_dir_}" :
