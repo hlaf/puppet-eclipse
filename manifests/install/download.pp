@@ -34,6 +34,7 @@ define eclipse::install::download (
   }
 
   $file_ext = $::operatingsystem ? { 'windows' => 'zip', default => 'tar.gz' }
+  $eclipse_exe = $::operatingsystem ? { 'windows' => 'eclipse.exe', default => 'eclipse' }
   $filename = "eclipse-${package}-${release_name}-${service_release}-${platform_tag}${archsuffix}.${file_ext}"
   $url = "${mirror}/technology/epp/downloads/release/${release_name}/${service_release}/${filename}"
   $archive_path = path_join(get_system_temp_dir(), $filename)
@@ -84,7 +85,7 @@ define eclipse::install::download (
     source          => $url,
     extract         => true,
     extract_path    => $target_dir_,
-    creates         => "${target_dir_}/eclipse",
+    creates         => "${target_dir_}/${eclipse_exe}",
     extract_command => $extract_command,
   }
 
