@@ -7,19 +7,22 @@
 #  include eclipse::install::download
 #
 define eclipse::install::download (
-  $package           = 'standard',
-  $release_name      = 'kepler',
-  $service_release   = 'SR1',
-  $mirror            = 'https://archive.eclipse.org',
-  $owner_group       = undef,
-  $ensure            = present,
-  $target_dir        = undef,
-  $extract_command   = undef,
-  $create_menu_entry = true,
+  $package             = 'standard',
+  $release_name        = 'kepler',
+  $service_release     = 'SR1',
+  $mirror              = 'https://archive.eclipse.org',
+  $owner_group         = undef,
+  $ensure              = present,
+  $target_dir          = undef,
+  $extract_command     = undef,
+  $create_menu_entry   = true,
+  $init_archive_module = true,
 ) {
 
   include eclipse::params
-  include ::archive
+  if $init_archive_module == true {
+    include ::archive
+  }
 
   $archsuffix = $::architecture ? {
     /i.86/               => '',
