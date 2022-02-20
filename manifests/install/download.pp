@@ -76,10 +76,9 @@ define eclipse::install::download (
     }
   }
 
-  exec { "create_install_path_${target_dir_}" :
-    command => "mkdir -p ${target_dir_}",
-    path    => $::path,
-    creates => $target_dir_,
+  dirtree { $target_dir_:
+    ensure  => present,
+    parents => true,
   }
   ->
   # per https://forge.puppet.com/puppet/archive
